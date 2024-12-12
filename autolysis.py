@@ -111,13 +111,6 @@ def generate_markdown_story(df_summary, output_dir):
     with open(f"{output_dir}/README.md", "w") as file:
         file.write(narrative)
 
-def download_files(output_dir):
-    # Download all files in the output directory
-    for filename in os.listdir(output_dir):
-        filepath = os.path.join(output_dir, filename)
-        if os.path.isfile(filepath):
-            files.download(filepath)
-
 def run_analysis(input_file):
     # Process the dataset
     try:
