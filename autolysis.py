@@ -131,13 +131,21 @@ def run_analysis(input_file):
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        # If no command-line argument is provided, prompt the user
-        input_file = input("Enter the path to the dataset (CSV file): ").strip()
-        if not os.path.exists(input_file):
-            print(f"File not found: {input_file}")
+        # Prompt user for dataset path if not provided
+        print("No dataset path provided as an argument.")
+        input_file = input("Please enter the path to the dataset (CSV file): ").strip()
+        if not input_file:
+            print("Dataset path cannot be empty.")
             sys.exit(1)
     else:
         input_file = sys.argv[1]
 
+    # Check if the file exists
+    if not os.path.exists(input_file):
+        print(f"File not found: {input_file}")
+        sys.exit(1)
+
+    # Proceed with analysis
     run_analysis(input_file)
+
 
