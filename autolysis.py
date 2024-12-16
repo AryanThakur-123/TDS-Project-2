@@ -4,7 +4,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import requests
 import json
-AIPROXY_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6IjIzZjEwMDI5NzNAZHMuc3R1ZHkuaWl0bS5hYy5pbiJ9.wSwq6uYHGuuRGaakCYYiRa6Nfb8jcN-Nmc3FuRPtd0k"
+AIPROXY_TOKEN = os.getenv("AIPROXY_TOKEN")
 PROXY_URL = "https://aiproxy.sanand.workers.dev/openai/v1/chat/completions"
 HEADERS = {
     "Authorization": f"Bearer {AIPROXY_TOKEN}",
