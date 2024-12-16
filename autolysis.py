@@ -4,21 +4,12 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import requests
 import json
-from google.colab import files
-import sys
-
-# Fetch the AIPROXY_TOKEN from environment variables
-AIPROXY_TOKEN = os.getenv("AIPROXY_TOKEN")
-
-if not AIPROXY_TOKEN:
-    raise ValueError("The AIPROXY_TOKEN environment variable is not set.")
-
+AIPROXY_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6IjIzZjEwMDI5NzNAZHMuc3R1ZHkuaWl0bS5hYy5pbiJ9.wSwq6uYHGuuRGaakCYYiRa6Nfb8jcN-Nmc3FuRPtd0k"
 PROXY_URL = "https://aiproxy.sanand.workers.dev/openai/v1/chat/completions"
 HEADERS = {
     "Authorization": f"Bearer {AIPROXY_TOKEN}",
     "Content-Type": "application/json"
 }
-
 def load_data(filename):
     try:
         # Try reading with utf-8 encoding first
@@ -36,7 +27,6 @@ def load_data(filename):
     except Exception as e:
         print(f"Error loading file: {e}")
         return None
-
 def analyze_data(df):
     # Perform basic data analysis
     summary_stats = df.describe(include="all").to_dict()
@@ -52,7 +42,6 @@ def analyze_data(df):
         "correlation_matrix": df.corr(numeric_only=True).fillna(0).to_dict(),
     }
     return summary
-
 def create_visualizations(df, output_dir):
     # Generate visualizations and save them as PNG files.
     os.makedirs(output_dir, exist_ok=True)
@@ -76,7 +65,6 @@ def create_visualizations(df, output_dir):
         plt.title("Correlation Heatmap")
         plt.savefig(f"{output_dir}/correlation_heatmap.png")
         plt.close()
-
 def query_llm(prompt):
     # Send a query to GPT-4o-Mini using AI Proxy
     try:
@@ -97,20 +85,16 @@ def query_llm(prompt):
     except Exception as e:
         print(f"Error querying LLM: {e}")
         return "Error querying LLM."
-
 def generate_markdown_story(df_summary, output_dir):
     # Generate README.md.
     prompt = (
-        "Using the data analysis summary provided below, construct a detailed narrative "
-        "in Markdown format that highlights the key characteristics of the dataset, "
-        "insights derived, and potential implications. Ensure the writing is professional, "
-        "engaging, and includes contextual relevance to the findings."
+        "You are a data scientist. Based on the following data analysis summary, "
+        "write a narrative in Markdown format including insights and visualizations:" 
         f"\n\n{json.dumps(df_summary, indent=2)}"
     )
     narrative = query_llm(prompt)
     with open(f"{output_dir}/README.md", "w") as file:
         file.write(narrative)
-
 def run_analysis(input_file):
     # Process the dataset
     try:
@@ -128,24 +112,11 @@ def run_analysis(input_file):
         print(f"Analysis complete. Outputs saved in {output_dir}/")
     except Exception as e:
         print(f"An error occurred: {e}")
+# Input the path to your dataset in the Jupyter Notebook
+import glob
 
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        # Prompt user for dataset path if not provided
-        print("No dataset path provided as an argument.")
-        input_file = input("Please enter the path to the dataset (CSV file): ").strip()
-        if not input_file:
-            print("Dataset path cannot be empty.")
-            sys.exit(1)
-    else:
-        input_file = sys.argv[1]
-
-    # Check if the file exists
-    if not os.path.exists(input_file):
-        print(f"File not found: {input_file}")
-        sys.exit(1)
-
-    # Proceed with analysis
+# Process all CSV files in the current directory
+input_files = glob.glob("*.csv")
+for input_file in input_files:
+    print(f"Processing file: {input_file}")
     run_analysis(input_file)
-
-
